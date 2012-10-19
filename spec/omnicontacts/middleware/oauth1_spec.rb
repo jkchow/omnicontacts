@@ -9,7 +9,7 @@ describe OmniContacts::Middleware::OAuth1 do
         @mock_auth_token_resp ||= Object.new
       end
 
-      def fetch_authorization_token
+      def fetch_authorization_token(query_params)
         OAuth1Middleware.mock_auth_token_resp.body
       end
 

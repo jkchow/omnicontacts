@@ -32,6 +32,24 @@ describe OmniContacts::Authorization::OAuth1 do
       test_target.fetch_authorization_token
     end
 
+    context "given additional query params were provided" do
+      it "should request the token providing all mandatory parameters" do
+        test_target.should_receive(:https_post) do |host, path, params|
+          host.should eq(test_target.auth_host)
+          path.should eq(test_target.auth_token_path)
+          params[:oauth_consumer_key].should eq(test_target.consumer_key)
+          params[:oauth_nonce].should_not be_nil
+          params[:oauth_signature_method].should eq("PLAINTEXT")
+          params[:oauth_signature].should eq(test_target.consumer_secret + "%26")
+          params[:oauth_timestamp].should_not be_nil
+          params[:oauth_version].should eq("1.0")
+          params[:oauth_callback].should eq "#{test_target.callback}?foo=bar"
+          "oauth_token=token&oauth_token_secret=token_secret"
+        end
+        test_target.fetch_authorization_token("foo" => "bar")
+      end
+    end
+
     it "should successfully parse the result" do
       test_target.should_receive(:https_post).and_return("oauth_token=token&oauth_token_secret=token_secret")
       test_target.fetch_authorization_token.should eq(["token", "token_secret"])

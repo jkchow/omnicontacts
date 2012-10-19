@@ -24,6 +24,13 @@ describe OmniContacts::Authorization::OAuth2 do
     it { should include("redirect_uri=#{test_target.redirect_uri}") }
     it { should include("access_type=offline") }
     it { should include("response_type=code") }
+    
+    context "additional query params for redirect_uri" do
+      subject { test_target.authorization_url "foo" => "bar" }
+      it "should append the query params to redirect_uri" do
+        subject.should include("redirect_uri=#{test_target.redirect_uri}%3Ffoo%3Dbar")
+      end
+    end
   end
 
   let(:access_token_response) { %[{"access_token": "access_token", "token_type":"token_type", "refresh_token":"refresh_token"}] }

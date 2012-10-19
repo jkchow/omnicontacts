@@ -9,6 +9,8 @@ module OmniContacts
   module Middleware
     class BaseOAuth
 
+      include HTTPUtils
+
       attr_reader :ssl_ca_file
 
       def initialize app, options
@@ -34,7 +36,7 @@ module OmniContacts
       def call env
         @env = env
         if env["PATH_INFO"] =~ /^#{@listening_path}\/?$/
-          handle_initial_request
+          handle_initial_request(get_query_params(env))
         elsif env["PATH_INFO"] =~ /^#{redirect_path}/
           handle_callback
         else
@@ -43,17 +45,21 @@ module OmniContacts
       end
 
       private
+
+      def get_query_params(env)
+        query_string_to_map(env["QUERY_STRING"])
+      end
       
       def test_mode?
         IntegrationTest.instance.enabled
       end
 
-      def handle_initial_request
+      def handle_initial_request(additional_query_params)
         execute_and_rescue_exceptions do
           if test_mode?
             IntegrationTest.instance.mock_authorization_from_user(self)
           else
-            request_authorization_from_user
+            request_authorization_from_user(additional_query_params)
           end
         end
       end

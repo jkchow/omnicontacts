@@ -31,8 +31,8 @@ module OmniContacts
       # Obtains an authorization token from the server,
       # stores it and the session and redirect the user
       # to the authorization website.
-      def request_authorization_from_user
-        (auth_token, auth_token_secret) = fetch_authorization_token
+      def request_authorization_from_user(additional_query_params = {})
+        (auth_token, auth_token_secret) = fetch_authorization_token(additional_query_params)
         session[@token_prop_name] = auth_token
         session[token_secret_prop_name(auth_token)] = auth_token_secret
         redirect_to_authorization_site(auth_token)

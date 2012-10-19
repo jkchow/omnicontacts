@@ -23,8 +23,8 @@ module OmniContacts
         @ssl_ca_file = options[:ssl_ca_file]
       end
 
-      def request_authorization_from_user
-        [302, {"location" => authorization_url}, []]
+      def request_authorization_from_user(additional_query_params = {})
+        [302, {"location" => authorization_url(additional_query_params)}, []]
       end
 
       def redirect_uri

@@ -19,20 +19,20 @@ module OmniContacts
 
       # Calculates the URL the user has to be redirected to in order to authorize
       # the application to access his contacts list.
-      def authorization_url
-        "https://" + auth_host + authorize_path + "?" + authorize_url_params
+      def authorization_url(additional_params = {})
+        "https://" + auth_host + authorize_path + "?" + authorize_url_params(additional_params)
       end
 
       private
 
-      def authorize_url_params
+      def authorize_url_params(additional_params)
         to_query_string({
             :client_id => client_id,
             :scope => encode(scope),
             :response_type => "code",
             :access_type => "online",
             :approval_prompt => "auto",
-            :redirect_uri => encode(redirect_uri)
+            :redirect_uri => encode(build_redirect_uri(additional_params))
           })
       end
 
@@ -44,6 +44,10 @@ module OmniContacts
       end
 
       private
+
+      def build_redirect_uri(additional_params)
+        redirect_uri + "?" + to_query_string(additional_params)
+      end
 
       def token_req_params code
         {

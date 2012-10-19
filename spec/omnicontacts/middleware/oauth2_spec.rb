@@ -5,7 +5,7 @@ describe OmniContacts::Middleware::OAuth2 do
 
   before(:all) do
     class OAuth2Middleware < OmniContacts::Middleware::OAuth2
-      def authorization_url
+      def authorization_url(query_params)
         "http://www.example.com"
       end
 

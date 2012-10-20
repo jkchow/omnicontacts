@@ -29,6 +29,10 @@ module OmniContacts
       CGI.escape(to_encode)
     end
 
+    def decode to_decode
+      CGI.unescape(to_decode)
+    end
+
     # Calculates the url of the host from a Rack environment.
     # The result is in the form scheme://host:port
     # If port is 80 the result is scheme://host

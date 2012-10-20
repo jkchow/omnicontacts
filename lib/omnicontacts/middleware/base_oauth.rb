@@ -71,7 +71,20 @@ module OmniContacts
           else
             fetch_contacts
           end
+
+          @env["omnicontacts.query_params"] = get_originator_query_params
+
           @app.call(@env)
+        end
+      end
+
+      def get_originator_query_params
+        query_params = query_string_to_map(@env["QUERY_STRING"])
+
+        if state = query_params["state"]
+          JSON.parse(decode(state))["qs"] || {}
+        else
+          {}
         end
       end
 

@@ -32,7 +32,8 @@ module OmniContacts
             :response_type => "code",
             :access_type => "online",
             :approval_prompt => "auto",
-            :redirect_uri => encode(build_redirect_uri(additional_params))
+            :state => encode({"qs" => additional_params}.to_json),
+            :redirect_uri => encode(redirect_uri)
           })
       end
 
@@ -44,10 +45,6 @@ module OmniContacts
       end
 
       private
-
-      def build_redirect_uri(additional_params)
-        redirect_uri + "?" + to_query_string(additional_params)
-      end
 
       def token_req_params code
         {

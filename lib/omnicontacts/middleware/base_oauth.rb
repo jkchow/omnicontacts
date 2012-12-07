@@ -103,7 +103,7 @@ module OmniContacts
 
       def handle_error error_type, exception
         logger << ("Error #{error_type} while processing #{@env["PATH_INFO"]}: #{exception.message}") if logger
-        [302, {"location" => "/contacts/failure#{get_failure_query_string}"}, []]
+        [302, {"location" => "/contacts/failure#{get_failure_query_string(error_message: error_type)}"}, []]
       end
 
       def get_failure_query_string(error_params)

@@ -36,8 +36,10 @@ module OmniContacts
       def call env
         @env = env
         if env["PATH_INFO"] =~ /^#{@listening_path}\/?$/
+          store_query_string
           handle_initial_request(get_query_params(env))
         elsif env["PATH_INFO"] =~ /^#{redirect_path}/
+          setup_query_params
           handle_callback
         else
           @app.call(env)
@@ -72,7 +74,7 @@ module OmniContacts
             fetch_contacts
           end
 
-          @env["omnicontacts.query_params"] = get_originator_query_params
+          @env["omnicontacts.query_params"] ||= get_originator_query_params
 
           @app.call(@env)
         end
@@ -125,6 +127,13 @@ module OmniContacts
         "omnicontacts." + class_name
       end
 
+      def store_query_string
+        session["#{base_prop_name}.query_string"] = @env["QUERY_STRING"]
+      end
+
+      def setup_query_params
+        @env["omnicontacts.query_params"] = query_string_to_map(session["#{base_prop_name}.query_string"])
+      end
     end
   end
 end

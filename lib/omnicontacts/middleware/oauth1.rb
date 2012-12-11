@@ -62,7 +62,6 @@ module OmniContacts
           raise AuthorizationError.new("User did not grant access to contacts list")
         end
       end
-
     end
   end
 end

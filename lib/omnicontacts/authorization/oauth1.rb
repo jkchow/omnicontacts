@@ -22,13 +22,13 @@ module OmniContacts
       # Obtain an authorization token from the server.
       # The token is returned in an array along with the relative authorization token secret.
       def fetch_authorization_token(additional_query_params = {})
-        request_token_response = https_post(auth_host, auth_token_path, request_token_req_params(additional_query_params))
+        request_token_response = https_post(auth_host, auth_token_path, request_token_req_params)
         values_from_query_string(request_token_response, ["oauth_token", "oauth_token_secret"])
       end
 
       private
 
-      def request_token_req_params(additional_query_params)
+      def request_token_req_params
         {
           :oauth_consumer_key => consumer_key,
           :oauth_nonce => encode(random_string),
@@ -36,16 +36,8 @@ module OmniContacts
           :oauth_signature => encode(consumer_secret + "&"),
           :oauth_timestamp => timestamp,
           :oauth_version => OAUTH_VERSION,
-          :oauth_callback => build_callback(additional_query_params)
+          :oauth_callback => callback
         }
-      end
-
-      def build_callback(query_params)
-        if query_params && query_params.any?
-          callback + "?" + to_query_string(query_params)
-        else
-          callback
-        end
       end
 
 

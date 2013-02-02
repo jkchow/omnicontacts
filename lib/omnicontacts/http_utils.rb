@@ -11,7 +11,7 @@ module OmniContacts
     module_function
 
     def query_string_to_map query_string
-      query_string.split('&').reduce({}) do |memo, key_value|
+      query_string.to_s.split('&').reduce({}) do |memo, key_value|
         (key, value) = key_value.split('=')
         memo[key]= value
         memo
@@ -60,7 +60,7 @@ module OmniContacts
     # If the result of ssl_ca_file is nil no file is used. In this case a warn message is logged.
     private
 
-    # Executes an HTTP GET request. 
+    # Executes an HTTP GET request.
     # It raises a RuntimeError if the response code is not equal to 200
     def http_get host, path, params
       connection = Net::HTTP.new(host)
